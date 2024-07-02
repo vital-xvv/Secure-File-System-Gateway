@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: secure-file-system-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: resource-server
+          uri: ${RESOURCE_SERVER_URI:http://localhost:8080}
+          predicates:
+            - Path=/file/**, /user/**, /auth/**
+          filters:
+            - PrefixPath=/api
+        - id: client-server
+          uri: ${CLIENT_SERVER_URI:http://localhost:3050}
+          predicates:
+            - Path=/**
+
+management:
+  server:
+    port: 7000
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+    gateway:
+      enabled: true
+
+server:
+  port: 7000
